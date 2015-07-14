@@ -56,6 +56,14 @@ public class IndexController {
         return "suscripcionAdmin";
     }
 
+    @RequestMapping("suscripcionCancel")
+    public String suscripcionCancel(Map<String, Object> model){
+
+
+        return "suscripcionCancelConfirma";
+    }
+
+
     @RequestMapping("articuloAdmin")
     public String articuloAdmin(Map<String, Object> model){
         return "articuloAdmin";
