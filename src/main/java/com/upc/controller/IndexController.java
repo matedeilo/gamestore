@@ -58,8 +58,6 @@ public class IndexController {
 
     @RequestMapping("suscripcionCancel")
     public String suscripcionCancel(Map<String, Object> model){
-
-
         return "suscripcionCancelConfirma";
     }
 
