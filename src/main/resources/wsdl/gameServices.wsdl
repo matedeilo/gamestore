@@ -1,0 +1,56 @@
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://service.ws.store.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="gamesService" targetNamespace="http://service.ws.store.com/">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://service.ws.store.com/" elementFormDefault="unqualified" targetNamespace="http://service.ws.store.com/" version="1.0">
+            <xs:element name="GameWS" type="tns:gameWS"/>
+            <xs:element name="getGames" type="tns:getGames"/>
+            <xs:element name="getGamesResponse" type="tns:getGamesResponse"/>
+            <xs:complexType name="getGames">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getGamesResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:gameWS"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="gameWS">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="defaultImageUrl" type="xs:string"/>
+                    <xs:element name="id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="licensorName" type="xs:string"/>
+                    <xs:element minOccurs="0" name="name" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="getGames">
+        <wsdl:part element="tns:getGames" name="parameters"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getGamesResponse">
+        <wsdl:part element="tns:getGamesResponse" name="parameters"></wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="GamesService">
+        <wsdl:operation name="getGames">
+            <wsdl:input message="tns:getGames" name="getGames"></wsdl:input>
+            <wsdl:output message="tns:getGamesResponse" name="getGamesResponse"></wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="gamesServiceSoapBinding" type="tns:GamesService">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getGames">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getGames">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getGamesResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="gamesService">
+        <wsdl:port binding="tns:gamesServiceSoapBinding" name="GamesServiceImplPort">
+            <soap:address location="http://localhost:8090/ws-server-1.0/services/gameServices"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

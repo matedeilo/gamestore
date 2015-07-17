@@ -10,40 +10,35 @@
     {{>nav}}
     <div class="jumbotron">
         <div class="container">
-            <select>
-                {{#devices}}
-                <option value="{{id}}">{{name}}</option>
-                {{/devices}}
-            </select>
-
             <div class="row">
-                <h2>{{article.category.name}}</h2>
+                <h2>Top</h2>
             </div>
             <div class="row">
+                {{#article150064}}
+                    <div class="col-xs-4 col-md-2">
+                        <a href="#" class="thumbnail">
+                            <img src="img/placeholder200.png">
+                        </a>
+                        <p>{{name}}</p>
+                        <p>{{licensorName}}</p>
+                        <a href="/detail/{{id}}">Detalle</a>
+                    </div>
+                {{/article150064}}
+            </div>
+            <div class="row">
+                <h2>Estrenos</h2>
+            </div>
+            <div class="row">
+                {{#article150071}}
                 <div class="col-xs-4 col-md-2">
                     <a href="#" class="thumbnail">
                         <img src="img/placeholder200.png">
                     </a>
-                    <p>{{article.name}}</p>
-                    <p>{{article.licensor}}</p>
-                    <a href="/detail/{{article.id}}">Detalle</a>
+                    <p>{{name}}</p>
+                    <p>{{licensorName}}</p>
+                    <a href="/detail/{{id}}">Detalle</a>
                 </div>
-                <div class="col-xs-4 col-md-2">
-                    <a href="#" class="thumbnail">
-                        <img src="img/placeholder200.png">
-                    </a>
-                    <p>{{article.name}}</p>
-                    <p>{{article.licensor}}</p>
-                    <a href="/detail/{{article.id}}">Detalle</a>
-                </div>
-                <div class="col-xs-4 col-md-2">
-                    <a href="#" class="thumbnail">
-                        <img src="img/placeholder200.png">
-                    </a>
-                    <p>{{article.name}}</p>
-                    <p>{{article.licensor}}</p>
-                    <a href="/detail/{{article.id}}">Detalle</a>
-                </div>
+                {{/article150071}}
             </div>
         </div>
     </div>

@@ -1,8 +1,11 @@
 package com.upc.controller;
 
+import com.store.ws.GamesService;
 import com.upc.bean.Article;
 import com.upc.bean.Category;
 import com.upc.bean.Device;
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,10 +19,19 @@ import java.util.Map;
 @Controller
 public class IndexController {
 
+    @Bean
+    public JaxWsProxyFactoryBean jaxWsProxyFactoryBean(){
+        JaxWsProxyFactoryBean factoryBean = new JaxWsProxyFactoryBean();
+        factoryBean.setAddress("http://localhost:8090/ws-server-1.0/services/gameServices");
+        factoryBean.setServiceClass(GamesService.class);
+        return factoryBean;
+    }
+
     @RequestMapping("/")
     public String index(Map<String, Object> model){
-        model.put("article", generateArticleData());
-        model.put("devices", generateDevicesData());
+        GamesService client = (GamesService) jaxWsProxyFactoryBean().create();
+        model.put("article150071", client.getGames("150071"));
+        model.put("article150064", client.getGames("150064"));
         return "home";
     }
 
@@ -79,17 +91,6 @@ public class IndexController {
         category.setName("Estrenos");
         article.setCategory(category);
         return article;
-    }
-
-    private List<Device> generateDevicesData(){
-        List<Device> devices = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Device device = new Device();
-            device.setId(i);
-            device.setName("Device " + i);
-            devices.add(device);
-        }
-        return devices;
     }
 
 
