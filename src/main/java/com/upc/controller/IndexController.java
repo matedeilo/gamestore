@@ -4,7 +4,9 @@ import com.store.ws.GamesService;
 import com.upc.bean.Article;
 import com.upc.bean.Category;
 import com.upc.bean.Device;
+import com.upc.service.GameClientImpl;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,9 @@ import java.util.Map;
 
 @Controller
 public class IndexController {
+
+    @Autowired
+    GameClientImpl gameClient;
 
     @Bean
     public JaxWsProxyFactoryBean jaxWsProxyFactoryBean(){
@@ -36,9 +41,18 @@ public class IndexController {
     }
 
     @RequestMapping("detail/{articleId}")
-    public String gamedetail(Map<String, Object> model, @PathVariable String articleId){
-        model.put("article", generateArticleData());
-        return "detail";
+    public String gamedetail(Map<String, Object> model, @PathVariable String articleId) {
+
+        try {
+            Article article = gameClient.getGameDetail(articleId);
+            model.put("article", gameClient.getGameDetail(articleId));
+            return "detail";
+        } catch (Exception e){
+            if(e.getMessage().equals("notfound")) {
+                model.put("message", "Juego no fue encontrado");
+            }
+            return "error";
+        }
     }
 
     @RequestMapping("purchase")
