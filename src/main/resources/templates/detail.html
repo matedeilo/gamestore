@@ -1,32 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title></title>
 
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
-    {{>nav}}
+    <div th:replace="fragments/header :: ${session.user}? headerOn : header"></div>
+
+    <div th:if="${#vars['error'] != null}" th:text="${#vars['message']}" class="alert alert-danger" role="alert"></div>
+
     <div class="container">
         <div class="jumbotron">
 
             <div class="row">
                 <div class="col-xs-4 col-2">
-                    <img src="../img/placeholder200.png">
+                    <img src="../img/placeholder200.png"/>
                 </div>
                 <div class="col-xs-4 col-2">
-                    <p>{{article.name}}</p>
-                    <p>{{article.licensor}}</p>
+                    <p th:text="${article.name}"></p>
+                    <p th:text="${article.licensor}"></p>
 
                     <div class="col-12">
-                        <h4 class="page-header">Opcion Suscripcion</h4>
-                        <p>Precio base : S/15</p>
-                        <a class="btn btn-primary" href="/purchase">Comprar</a>
+                        <h4 class="page-header">Opcion: Compra a traves de una Suscripcion</h4>
+                        <p>Precio mensual: S/15</p>
+                        <a th:if="${session.user == null or !session.user.isHasSubscrition()}" class="btn btn-primary" th:href="@{/purchase/{id}(id=${article.id})}">Comprar</a>
+                        <a th:if="${session.user!= null and session.user.isHasSubscrition()}" class="btn btn-primary" href="#">Descargar</a>
                     </div>
                 </div>
                 <div class="col-xs-4 col-2">
-                    <p>{{article.description}}</p>
+                    <p th:text="${article.description}"></p>
                 </div>
             </div>
         </div>

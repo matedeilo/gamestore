@@ -1,23 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title></title>
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
-{{>nav}}
+    <div th:replace="fragments/header :: ${session.user}? headerOn : header"></div>
 
     <div class="container">
         <div class="jumbotron">
-            <h2>Felicidades su compra ha sido realiza con exito. Puede realizar su descargar</h2>
+            <h2>Felicidades su compra ha sido realizada con exito. Puede realizar su descarga</h2>
 
-            <p>Detalle de la compra:</p>
-            <div>
-                <p>{{article.name}}</p>
-            </div>
 
-            <a class="btn btn-primary" href="/#"> Descargar </a>
+            <a class="btn btn-primary" th:href="${apk}" target="_blank" > Descargar </a>
         </div>
     </div>
     <script src="../js/jquery.js"></script>

@@ -1,44 +1,41 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title></title>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
-    {{>nav}}
+    <div th:replace="fragments/header :: ${session.user}? headerOn : header"></div>
+
     <div class="jumbotron">
         <div class="container">
             <div class="row">
                 <h2>Top</h2>
             </div>
             <div class="row">
-                {{#article150064}}
-                    <div class="col-xs-4 col-md-2">
-                        <a href="#" class="thumbnail">
-                            <img src="img/placeholder200.png">
-                        </a>
-                        <p>{{name}}</p>
-                        <p>{{licensorName}}</p>
-                        <a href="/detail/{{id}}">Detalle</a>
-                    </div>
-                {{/article150064}}
+                <div th:each="game : ${article150064}" class="col-xs-4 col-md-2">
+                    <a href="#" class="thumbnail">
+                        <img src="img/placeholder200.png"/>
+                    </a>
+                    <p th:text="${game.name}"></p>
+                    <p th:text="${game.licensorName}"></p>
+                    <a th:href="@{/detail/{id}(id=${game.id})}">Detalle</a>
+                </div>
             </div>
             <div class="row">
                 <h2>Estrenos</h2>
             </div>
             <div class="row">
-                {{#article150071}}
-                <div class="col-xs-4 col-md-2">
+                <div th:each="game : ${article150071}" class="col-xs-4 col-md-2">
                     <a href="#" class="thumbnail">
-                        <img src="img/placeholder200.png">
+                        <img src="img/placeholder200.png"/>
                     </a>
-                    <p>{{name}}</p>
-                    <p>{{licensorName}}</p>
-                    <a href="/detail/{{id}}">Detalle</a>
+                    <p th:text="${game.name}"></p>
+                    <p th:text="${game.licensorName}"></p>
+                    <a th:href="@{/detail/{id}(id=${game.id})}">Detalle</a>
                 </div>
-                {{/article150071}}
             </div>
         </div>
     </div>

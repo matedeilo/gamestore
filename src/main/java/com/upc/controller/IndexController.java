@@ -3,26 +3,34 @@ package com.upc.controller;
 import com.store.ws.GamesService;
 import com.upc.bean.Article;
 import com.upc.bean.Category;
-import com.upc.bean.Device;
+import com.upc.bean.User;
+import com.upc.service.DeliveryClientImpl;
 import com.upc.service.GameClientImpl;
+import com.upc.service.SubscriptionClientImpl;
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Controller
 public class IndexController {
 
     @Autowired
     GameClientImpl gameClient;
+
+    @Autowired
+    SubscriptionClientImpl subscriptionClient;
+
+    @Autowired
+    DeliveryClientImpl deliveryClient;
 
     @Bean
     public JaxWsProxyFactoryBean jaxWsProxyFactoryBean(){
@@ -33,65 +41,45 @@ public class IndexController {
     }
 
     @RequestMapping("/")
-    public String index(Map<String, Object> model){
+    public String index(@ModelAttribute User user, Model model){
         GamesService client = (GamesService) jaxWsProxyFactoryBean().create();
-        model.put("article150071", client.getGames("150071"));
-        model.put("article150064", client.getGames("150064"));
+        model.addAttribute("article150071", client.getGames("150071"));
+        model.addAttribute("article150064", client.getGames("150064"));
         return "home";
     }
 
     @RequestMapping("detail/{articleId}")
-    public String gamedetail(Map<String, Object> model, @PathVariable String articleId) {
-
+    public String gamedetail(HttpServletRequest request, Model model, @ModelAttribute User user, @PathVariable String articleId) {
         try {
             Article article = gameClient.getGameDetail(articleId);
-            model.put("article", gameClient.getGameDetail(articleId));
+            model.addAttribute("article", gameClient.getGameDetail(articleId));
             return "detail";
         } catch (Exception e){
             if(e.getMessage().equals("notfound")) {
-                model.put("message", "Juego no fue encontrado");
+                model.addAttribute("message", "Juego no fue encontrado");
             }
             return "error";
         }
     }
 
-    @RequestMapping("purchase")
-    public String purchase(Map<String, Object> model){
-        model.put("article", generateArticleData());
+    @RequestMapping("purchase/{articleId}")
+    public String purchase(Model model, @ModelAttribute User user, @PathVariable String articleId,
+                           HttpSession session, RedirectAttributes redirectAttributes) throws Exception{
+        if (session.getAttribute("user") == null) {
+            redirectAttributes.addFlashAttribute("error", true);
+            redirectAttributes.addFlashAttribute("message", "Inicia sesion para realizar la compra");
+            return "redirect:/detail/"+articleId;
+        }
+        User userSession = (User) session.getAttribute("user");
+        subscriptionClient.createSubscription(userSession.getNumber());
+        String routeApk = deliveryClient.downloadGame(userSession.getNumber(), articleId);
+        model.addAttribute("apk", routeApk);
+
+        userSession.setHasSubscrition(true);
+        session.setAttribute("user", userSession);
         return "purchaseConfirmation";
     }
 
-    @RequestMapping("mygames")
-    public String mygames(Map<String, Object> model){
-        model.put("article", generateArticleData());
-        return "mygames";
-    }
-
-    @RequestMapping("login")
-    public String login(Map<String, Object> model){
-        return "login";
-    }
-
-    @RequestMapping("admin")
-    public String admin(Map<String, Object> model){
-        return "admin";
-    }
-
-    @RequestMapping("suscripcionAdmin")
-    public String suscripcionAdmin(Map<String, Object> model){
-        return "suscripcionAdmin";
-    }
-
-    @RequestMapping("suscripcionCancel")
-    public String suscripcionCancel(Map<String, Object> model){
-        return "suscripcionCancelConfirma";
-    }
-
-
-    @RequestMapping("articuloAdmin")
-    public String articuloAdmin(Map<String, Object> model){
-        return "articuloAdmin";
-    }
 
     private Article generateArticleData(){
         Article article = new Article();
